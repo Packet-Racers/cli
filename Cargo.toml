@@ -6,6 +6,9 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reedline-repl-rs = { version =  "1.0", feature = ["async"] }
-reedline = { version = "0.19", feature = ["system_clipboard"] }
+reedline-repl-rs = { version =  "1.0.6", features = ["async"] }
 cli-prompts = "0.1"
+
+packet_racers = { path = "../core", features = ["default"] }
+tokio = { version = "1", features = ["full"] }
+uuid =  { version = "1.3", features = ["v4"] }

@@ -8,7 +8,7 @@ use cli_prompts::{
   prompts::{AbortReason, Input},
   DisplayPrompt,
 };
-use reedline_repl_rs::{Result as ReplResult, clap::ArgMatches};
+use reedline_repl_rs::{clap::ArgMatches, Result as ReplResult};
 
 use crate::context::PacketRacerContext;
 
@@ -18,7 +18,7 @@ fn show_input_prompt() -> Result<(String, u16), AbortReason> {
     .display()?;
 
   let port: u16 = Input::new("Enter the port", port_validation)
-    .default_value("80")
+    .default_value("2000")
     .display()?;
 
   Ok((name, port))
@@ -54,7 +54,7 @@ fn port_validation(port: &str) -> Result<u16, String> {
   Ok(port)
 }
 
-pub fn login(
+pub async fn login(
   _args: ArgMatches,
   context: &mut PacketRacerContext,
 ) -> ReplResult<Option<String>> {
@@ -63,7 +63,8 @@ pub fn login(
     Err(reason) => return Ok(Some(format!("{reason:?}"))),
   };
 
-  context.login(name, port);
-
-  Ok(Some("Logged in".to_string()))
+  match context.login(name, port).await {
+    Ok(_) => Ok(Some("Logged in".to_string())),
+    Err(e) => Ok(Some(e)),
+  }
 }
